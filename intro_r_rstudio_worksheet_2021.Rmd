@@ -1,0 +1,143 @@
+---
+title: "Intro to R and RStudio Worksheet"
+author: "Jaclyn Janis, jaclyn.janis@rstudio.com"
+date: "November 3, 2021"
+output: html_document
+---
+
+Who doesn't like homework, you know?
+
+The following is designed for you to do some self-guided learning on your own time after our 1-hour session, Intro to R and RStudio. This is not meant to be a comprehensive introduction. This worksheet is simply to get your hands on some code, get a little more situated with the IDE, and create something cool (a plot!).
+
+What you see here is an Rmarkdown file. This combines regular text with chunks of code (those gray boxes, if you're working in the default RStudio theme). This helps me explain my code and what this file is doing while also running what I need to run and showing the output beneath the code chunk. This type of file is great for communicating what you do in an analysis, whether that is to an audience or simply to your future self looking back on your work. We can go more into what you can do with Rmarkdown in the Intro to Rmarkdown session.
+
+So let's get started...
+
+# Packages
+
+R the programming language consists of base R and the packages that have been built on top of it. In order to use certain functions/commands, you will need to load the packages from which they originate, which is done with the library() call. If you need to install a package, you can take away the "#" below, which comments out text in the code chunk, and run the install.packages() call before the library() call.
+
+Note, you see a "#" above as well, but in this space outside the code chunk, this is simply making "Packages" a level one header. Learn more about formatting like this in the Rmarkdown cheat sheet (Help > Cheat Sheets > Rmarkdown cheat sheet).
+
+Voila, your first code chunk of the day. This functions just like an R script, AKA where you execute R code. For any comments (AKA not code) within, just begin the line with "#".
+
+```{r}
+# To install a package if you don't already have it:
+# install.packages("tidyverse")
+
+# To load the package into your R session so you can access its functionality, run this:
+library(tidyverse)
+# The tidyverse is actually a constellation of packages. Learn more here: https://www.tidyverse.org/packages/
+```
+
+# Reading in Data
+
+There are many ways to read in data, including via the point-and-click "Import Dataset" button that you see under "Environment," over to the right.
+
+We are going to use the readr package to read in a comma-separated values (CSV) file from a URL. This dataset contains information on MMR (measles, mumps, rubella) vaccination rates for US schools.
+
+Information on this dataset, including a data dictionary, can be found [here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-25/readme.md). Definitely have a look.
+
+```{r}
+measles <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
+```
+
+You will see output after you read in the data that tells you what variable type has been recognized for each column in your data. Look reasonable according to your data dictionary? Don't spend too much time thinking about it, you can move on to learn more.
+
+# Looking at the Data
+
+Insert a code chunk below with the keyboard shortcut Ctrl + Alt + i or by going to Code > Insert chunk (can you find the green +C at the top of this file? What other code chunks can you insert?).
+
+
+
+[insert code chunk here]
+
+
+Now install the skimr package and load the library. Run skim(measles) in your code chunk.
+
+Next, pick a numeric variable in the dataset and explore it with the following. Replace "variable" with the variable name of your choosing.
+
+```{r}
+skim(measles$variable)
+```
+
+Here, we're telling R, hey, look at that dataframe measles, specifically the (insert your chosen variable) column.
+
+See what you get when you do:
+
+```{r}
+summary(measles$variable)
+```
+
+If you picked mmr as your variable, do you notice anything wacky?
+
+Note: there are many, many functions and packages to help you get a glance at your data. Do a lil google search and see what you can find.
+
+
+# Exploring the Data
+
+## Pick a state, any state
+
+Maybe you just want to focus on your state (if you live in the US) to explore vaccination statistics. You will choose these rows with filter(), which will return rows based on your condition. Fill in a state name in this code to create a state-specific dataframe.
+
+(Go to Help > Cheat sheets, above, for more dplyr functions for data transformation.)
+
+The pipe operator, %>% , is what will pass your dataframe to filter(), which is a function to choose specific rows based on a condition.
+
+```{r}
+state_measles <- measles %>% 
+  filter(state == "Maine")
+```
+
+## Find the mean percent MMR vaccination in the state
+
+Fill in the mean() call with your df$var syntax in the parentheses.
+
+```{r}
+mean()
+```
+
+Now, with your cursor on mean(), above, hit F1 to view documentation in the "Help" tab, to the lower right.
+
+Now try this with your same df$var syntax in the parentheses:
+```{r}
+nice()
+```
+
+Just wanted you to see what would happen when R can't find a function or that function isn't a real function. :)
+
+## Make histograms of MMR and overall school vaccination percent
+
+```{r}
+# MMR vaccination for state-specific data (depending on what state you picked - there's something tricky in this dataset)
+hist(state_measles$mmr)
+
+# Overall vaccination for ALL STATES - fill in this call:
+hist()
+```
+
+## Take only the columns you need
+
+To choose columns, we will use select(). Using the syntax like your filter() statement above, can you write the code? Create a new dataframe called state_measles2 (or whatever you want, that's a separate discussion). You can choose the columns you want in your dataframe with select(var1, var2, var3), or you can deselect columns with select(-var1, -var3).
+
+```{r}
+state_measles2 <- ______ %>% 
+  select()
+```
+
+
+## Make a plot
+
+We'll use the ggplot2 package for a visualization. This package is part of the tidyverse, so it is already available to use in your session.
+
+```{r}
+state_measles %>% 
+  ggplot(aes(x = county, y = mmr)) +
+  geom_boxplot()
+
+# Time to explore with your built-in help resources or your googling skills!
+# Try flipping the x- and y-axes so we can read the county names better. 
+# Then remove the county label and make a better x-axis label. 
+# What if you want to compare just a few counties?
+```
+
